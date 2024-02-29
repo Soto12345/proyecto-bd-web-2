@@ -36,14 +36,36 @@ class CategoryService {
   }
 
   async findByName(name: string) {
-    const category = await Categories.findOne({ name }).catch((error) => {
+    const category = await Categories.findOne({name}).catch((error) => {
       console.log('Error while connecting to the DB', error)
     })
 
     if (!category) {
       throw boom.notFound('Category not found')
     }
+    return category
   }
+
+   async delete(name: string) {
+     const category = await Categories.deleteOne({ name }).catch((error) => {
+       console.log('Error while connecting to the DB', error)
+     })
+     if (!category) {
+       throw boom.notFound('Category not found')
+     }
+     return category
+   }
+
+   async update_name(filter: string,name: string){
+     const category =await Categories.findOneAndUpdate({name: filter},{name}).catch((error)=>{
+      console.log("Error while connecting to the DB",error);
+     })
+     if(!category){
+      throw boom.notFound('category not found and not update'); 
+     }
+     return category
+   }
+
 }
 
 export default CategoryService
