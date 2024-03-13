@@ -13,7 +13,11 @@ const Categories = new Schema<Category, CategoryModel>({
     type: String,
     required: false,
     trim: true
-  }
+  },
+  products: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Product'
+  }]
 })
 
 export default model('Category', Categories)
