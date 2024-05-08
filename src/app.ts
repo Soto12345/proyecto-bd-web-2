@@ -1,5 +1,6 @@
 import express from 'express'
 import mongoose from 'mongoose'
+import cors from 'cors'
 import {
   logErrors,
   errorHandler,
@@ -11,8 +12,9 @@ import passport from 'passport'
 import './utils/auth'
 
 const { mongoUri, port } = config
-
 const app = express()
+
+app.use(cors())
 app.use(express.json())
 const connectDB = () => {
   mongoose.connect(mongoUri)

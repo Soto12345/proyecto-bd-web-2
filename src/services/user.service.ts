@@ -25,6 +25,23 @@ class UserService {
 
     return newUser
   }
+  async login(user: User) {
+    try {
+      const existingUser = await Users.findOne({ email: user.email });
+      if (!existingUser) {
+        throw new Error("Usuario no encontrado");
+      }
+  
+      const passwordMatch = await bcrypt.compare(user.password, existingUser.password);
+      if (!passwordMatch) {
+        throw new Error("Contraseña incorrecta");
+      }
+      return existingUser;
+    } catch (error) {
+      console.error("Error en la función login:", error);
+      throw boom.badRequest("Error al iniciar sesión");
+    }
+  }
 
   async findByEmail(email: string) {
     const user = await Users.findOne({ email }).catch((error) => {
@@ -36,6 +53,16 @@ class UserService {
     }
 
     return user
+  }
+
+  async listUsuarios() {
+    const users = await Users.find({}).catch((error) => {
+      console.log('Could not retrieve user info', error)
+    })
+    if (!users) {
+      throw boom.notFound('not users')
+    }
+    return users
   }
 }
 
