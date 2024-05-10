@@ -18,7 +18,7 @@ router.post(
       const payload = { sub: user.id }
       const dbUser = await service.findByEmail(user.email)
       const token = jwt.sign(payload, config.jwtSecret)
-      res.status(200).json({ user: dbUser.toClient(), token })
+      res.status(200).json({ status:200,mensaje:"Peticion realizada",user: dbUser.toClient(), token })
     } catch (error) {
       console.log(error)
       next(error)

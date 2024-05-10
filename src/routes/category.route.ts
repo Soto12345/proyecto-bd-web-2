@@ -19,14 +19,18 @@ router.post(
 )
 
 router.get(
-  '/',
+  '/TodasCategorias',
   passport.authenticate('jwt', { session: false }),
   async (req: UserRequestType, res, next) => {
     try {
       const { user } = req
       console.log(user)
       const categories = await service.findAll()
-      res.status(200).json(categories)
+      res.status(200).json({
+        status: 200,
+        mensaje: 'peticion realizada correctamente',
+        data: categories
+      })
     } catch (error) {
       next(error)
     }
@@ -58,7 +62,7 @@ router.get(
     }
   }
 )
- 
+
 //consultar todas las categorias
 router.get('/', async (req, res, next) => {
   try {
@@ -86,25 +90,28 @@ router.get('/name/:name', async (req, res, next) => {
     next(error)
   }
 })
-//metodo de eliminar categoria 
-router.get('/delete/:name', async(req, res, next)=>{
-  try{
+//metodo de eliminar categoria
+router.get('/delete/:name', async (req, res, next) => {
+  try {
     const category = await service.delete(req.params.name as string)
     res.status(200).json(category)
-    res.send("categoria eliminada correctamente")
-  }catch(error){
+    res.send('categoria eliminada correctamente')
+  } catch (error) {
     next(error)
   }
 })
 //metodo de actualizar nombre de la categoria
-router.post('/update/', async(req,res,next)=>{
-  try{
-    const category_filter: string=req.body.filter
-    const category_name: string=req.body.name
-    const update_category = await service.update_name(category_filter,category_name);
+router.post('/update/', async (req, res, next) => {
+  try {
+    const category_filter: string = req.body.filter
+    const category_name: string = req.body.name
+    const update_category = await service.update_name(
+      category_filter,
+      category_name
+    )
     res.status(200).json(update_category)
-    res.send("nombre de la categoria actualizada")
-  }catch(error){
+    res.send('nombre de la categoria actualizada')
+  } catch (error) {
     next(error)
   }
 })
