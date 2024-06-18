@@ -14,7 +14,11 @@ router.post(
     const category: Category = req.body
     const newCategory = await service.create(category)
 
-    res.status(201).json(newCategory)
+    res.status(200).json({
+      status: 200,
+      mensaje: 'peticion enviada correctamente',
+      categorie: newCategory
+    })
   }
 )
 
@@ -94,7 +98,11 @@ router.get('/name/:name', async (req, res, next) => {
 router.get('/delete/:name', async (req, res, next) => {
   try {
     const category = await service.delete(req.params.name as string)
-    res.status(200).json(category)
+    res.status(200).json({
+      status: 200,
+      mensaje: 'categoria eliminada correctamente',
+      category: category
+    })
     res.send('categoria eliminada correctamente')
   } catch (error) {
     next(error)

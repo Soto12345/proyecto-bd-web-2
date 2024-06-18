@@ -5,7 +5,7 @@ import passport from 'passport'
 import { UserRequestType } from '../types/user.type'
 import CategoryModel from '../models/category.model'
 import productsModel from '../models/products.model'
-import  boom  from '@hapi/boom'
+import boom from '@hapi/boom'
 const router = express.Router()
 const service = new ProductService()
 
@@ -16,7 +16,13 @@ router.post(
     try {
       const product = req.body
       const newProduct = await service.create(product)
-      res.status(201).json(newProduct)
+      res
+        .status(200)
+        .json({
+          status: 200,
+          mensaje: 'peticion realizada correctamente',
+          products: newProduct
+        })
     } catch (error) {
       next(error)
     }
@@ -24,12 +30,18 @@ router.post(
 )
 
 router.get(
-  '/',
+  '/TodosProductos',
   passport.authenticate('jwt', { session: false }),
   async (req: UserRequestType, res, next) => {
     try {
       const products = await service.findAll()
-      res.status(200).json(products)
+      res
+        .status(200)
+        .json({
+          status: 200,
+          mensaje: 'Peticion Realizada correctamente',
+          products: products
+        })
     } catch (error) {
       next(error)
     }
@@ -62,19 +74,32 @@ router.get(
   }
 )
 
-router.delete(
-  '/:name',
-  passport.authenticate('jwt', { session: false }),
-  async (req, res, next) => {
-    try {
-      const result = await service.delete(req.params.name)
-      res.status(200).json(result)
-    } catch (error) {
-      next(error)
-    }
+// router.delete(
+//   '/:name',
+//   passport.authenticate('jwt', { session: false }),
+//   async (req, res, next) => {
+//     try {
+//       const result = await service.delete(req.params.name)
+//       res.status(200).json(result)
+//     } catch (error) {
+//       next(error)
+//     }
+//   }
+// )
+//metodo de eliminar producto
+router.get('/delete/:name', async (req, res, next) => {
+  try {
+    const product = await service.delete(req.params.name as string)
+    res.status(200).json({
+      status: 200,
+      mensaje: 'producto eliminado correctamente',
+      product: product
+    })
+    res.send('producto eliminado correctamente')
+  } catch (error) {
+    next(error)
   }
-)
-
+})
 router.put(
   '/:filter',
   passport.authenticate('jwt', { session: false }),
@@ -94,19 +119,19 @@ router.get(
   passport.authenticate('jwt', { session: false }),
   async (req, res, next) => {
     try {
-      const category = await CategoryModel.findOne({ name: req.params.name });
+      const category = await CategoryModel.findOne({ name: req.params.name })
       if (!category) {
-        throw boom.notFound('Category not found');
+        throw boom.notFound('Category not found')
       }
 
-      const products = await productsModel.find({ category: category._id });
+      const products = await productsModel.find({ category: category._id })
       if (!products) {
-        throw boom.notFound('No products found for this category');
+        throw boom.notFound('No products found for this category')
       }
 
-      res.status(200).json({ category, products });
+      res.status(200).json({ category, products })
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 )
